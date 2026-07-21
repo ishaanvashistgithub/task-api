@@ -1,0 +1,6 @@
+services:
+  task-api:
+    build: .
+    ports:
+      - "8080:8081"
+    # depends_on: db  (Postgres service added in Week 3)

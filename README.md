@@ -1,0 +1,75 @@
+# Task API
+
+A task management REST API built with Spring Boot, featuring layered architecture, input validation, centralized error handling, and full Docker/Compose support for containerized deployment.
+
+## Tech Stack
+
+- Java 21
+- Spring Boot 4.1
+- Maven
+- Docker + Docker Compose
+
+## Endpoints
+
+| Method | Path                  | Description                          |
+|--------|-----------------------|--------------------------------------|
+| GET    | `/api/tasks`          | Get all tasks                        |
+| GET    | `/api/tasks/{id}`     | Get a single task by ID               |
+| POST   | `/api/tasks`          | Create a new task                     |
+| PUT    | `/api/tasks/{id}`     | Update an existing task               |
+| DELETE | `/api/tasks/{id}`     | Delete a task                         |
+| GET    | `/api/tasks/info`     | Returns a configured welcome message   |
+| GET    | `/api/tasks/information` | Returns a configured welcome message (list variant) |
+
+All task fields: `id`, `title`, `description`, `completed`.
+
+## How to Run
+
+### Locally (Maven)
+```
+./mvnw spring-boot:run
+```
+App runs on `localhost:8080` by default (or whatever `server.port` is set to in `application.properties`).
+
+### With Docker
+```
+docker build -t task-api:v1 .
+docker run --rm -p 8080:8081 task-api:v1
+```
+Note: the app listens on port 8081 inside the container; the command above maps host port 8080 to it.
+
+### With Docker Compose
+```
+docker compose up
+```
+Builds and runs the app in one command. A placeholder for a Postgres service is left in `docker-compose.yml` for Week 3, when persistent storage gets added.
+
+## Architecture
+
+The project follows a layered structure:
+
+- **Controller** (`TaskController`) — handles HTTP requests only: receives input, calls the service, returns a response. No business logic lives here.
+- **Service** (`TaskService`) — holds the actual business logic (creating, updating, fetching, deleting tasks).
+- **Repository** (`TaskRepository`) — handles data storage. Currently in-memory; will move to PostgreSQL in Week 3.
+- **Exception handling** — a custom `TaskNotFoundException` paired with a `GlobalExceptionHandler` turns errors into clean, consistent HTTP responses (404 for missing tasks, 400 for validation failures), instead of leaking raw stack traces.
+- **Validation** — request bodies are validated using `@Valid` (Jakarta Validation) before reaching the service layer.
+- **Configuration** — settings like the welcome message are externalized into `application.properties` rather than hardcoded, using `@Value`.
+
+This separation keeps each layer responsible for exactly one thing, and makes the code easier to test and extend (e.g. swapping the in-memory repository for a database-backed one later without touching the controller or service).
+
+## Concepts Learned
+
+### Request Lifecycle
+A request travels: Browser → `DispatcherServlet` (Spring's front controller, routes incoming requests) → the matching `@RestController` method → business logic in the service layer → response serialized back to JSON.
+
+### Bean
+A Bean is a single Java object that Spring creates and manages at runtime — instead of the class creating its own dependencies with `new`, Spring builds it once and hands it out wherever it's needed (e.g. `TaskService`, `TaskController`).
+
+### Application Context
+The Application Context is where Spring keeps all the Beans it has built — a container/storage that holds every managed object. When a class needs a Bean, Spring retrieves it from the Application Context rather than creating a new one on the spot.
+
+### Singleton vs Prototype Scope
+- **Singleton** (the default): Spring creates exactly one instance of a Bean and shares that same object everywhere it's needed.
+- **Prototype**: Spring creates a brand new instance every single time the Bean is requested, with no sharing between callers.
+
+Most Beans in this project (like `TaskService`) are singletons — safe because they don't hold per-request state, just logic and a reference to the repository.
