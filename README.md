@@ -73,3 +73,7 @@ The Application Context is where Spring keeps all the Beans it has built — a c
 - **Prototype**: Spring creates a brand new instance every single time the Bean is requested, with no sharing between callers.
 
 Most Beans in this project (like `TaskService`) are singletons — safe because they don't hold per-request state, just logic and a reference to the repository.
+
+## Live Deployment
+
+Deployed on Render: https://task-api-tndd.onrender.com/api/tasks
