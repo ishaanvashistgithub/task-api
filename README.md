@@ -77,3 +77,7 @@ Most Beans in this project (like `TaskService`) are singletons — safe because 
 ## Live Deployment
 
 Deployed on Render: https://task-api-tndd.onrender.com/api/tasks
+
+## Running Tests
+
+./mvnw test
