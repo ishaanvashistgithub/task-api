@@ -10,16 +10,15 @@ A task management REST API built with Spring Boot, featuring layered architectur
 - Docker + Docker Compose
 
 ## Endpoints
+## Endpoints
 
-| Method | Path                  | Description                          |
-|--------|-----------------------|--------------------------------------|
-| GET    | `/api/tasks`          | Get all tasks                        |
-| GET    | `/api/tasks/{id}`     | Get a single task by ID               |
-| POST   | `/api/tasks`          | Create a new task                     |
-| PUT    | `/api/tasks/{id}`     | Update an existing task               |
-| DELETE | `/api/tasks/{id}`     | Delete a task                         |
-| GET    | `/api/tasks/info`     | Returns a configured welcome message   |
-| GET    | `/api/tasks/information` | Returns a configured welcome message (list variant) |
+| Method | Path                      | Description                          | Success Status |
+|--------|----------------------------|---------------------------------------|-----------------|
+| GET    | `/api/tasks`               | Get all tasks                         | 200 |
+| GET    | `/api/tasks/{id}`          | Get a single task by ID               | 200 |
+| POST   | `/api/tasks`                | Create a new task                     | 201 |
+| PUT    | `/api/tasks/{id}`          | Update an existing task               | 200 |
+| DELETE | `/api/tasks/{id}`          | Delete a task                         | 204 |
 
 All task fields: `id`, `title`, `description`, `completed`.
 
